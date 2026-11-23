@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>منصة حساب الرواتب والعلاوة والتقاعد - أزرق فاتح وأبيض</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #f4f9ff;
+      --bg-card: #ffffff;
+      --bg-soft: #eaf4ff;
+      --bg-accent-soft: #dbeeff;
+      --border-light: #cde2fa;
+      --border-strong: #9cc8f7;
+      --text-main: #0f294a;
+      --text-muted: #4b6b8f;
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --success: #0d9488;
+      --success-bg: #e6f7f5;
+      --danger: #b91c1c;
+      --danger-bg: #fef2f2;
+      --shadow: 0 6px 20px rgba(2, 132, 199, 0.08);
+      --radius: 16px;
+      --radius-sm: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(180deg, #e8f3ff 0%, #f7fbff 260px, #f4f9ff 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 16px 14px 48px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #ffffff 0%, #e6f3ff 100%);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 20px 18px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .header-title h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .header-title p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .badge-hijri {
+      background: var(--bg-accent-soft);
+      color: var(--primary-dark);
+      border: 1px solid var(--border-strong);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    /* Summary Grid */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .summary-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+    }
+
+    .stat-card.highlight {
+      background: linear-gradient(160deg, #e0f2fe 0%, #ffffff 100%);
+      border-color: var(--border-strong);
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .stat-value.success {
+      color: var(--success);
+    }
+
+    .stat-value.danger {
+      color: var(--danger);
+    }
+
+    .stat-sub {
+      font-size: 0.73rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Section Card */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--bg-soft);
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-pill {
+      background: var(--bg-soft);
+      color: var(--primary-dark);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    /* Form Controls */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 560px) {
+      .form-grid.cols-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .form-grid.cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .field label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    select, input[type="number"], input[type="text"] {
+      width: 100%;
+      background: #f9fcff;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select:focus, input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.14);
+      background: #ffffff;
+    }
+
+    .hijri-row {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1.1fr;
+      gap: 6px;
+    }
+
+    .greg-hint {
+      font-size: 0.76rem;
+      color: var(--primary-dark);
+      background: var(--bg-soft);
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    /* Accordion Items */
+    .accordion-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .accordion-item {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      background: #fbfdff;
+      overflow: hidden;
+    }
+
+    .accordion-item.deduction {
+      border-color: #fecaca;
+      background: #fffafa;
+    }
+
+    .accordion-trigger {
+      width: 100%;
+      background: transparent;
+      border: none;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      text-align: right;
+      color: var(--text-main);
+    }
+
+    .accordion-trigger:hover {
+      background: var(--bg-soft);
+    }
+
+    .acc-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .acc-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .acc-tag {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    .tag-included {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .tag-excluded {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    .acc-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .acc-amount {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      white-space: nowrap;
+    }
+
+    .accordion-item.deduction .acc-amount {
+      color: var(--danger);
+    }
+
+    .chevron {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      transition: transform 0.2s ease;
+    }
+
+    .accordion-item.open .chevron {
+      transform: rotate(180deg);
+    }
+
+    .accordion-body {
+      display: none;
+      padding: 12px 14px 14px;
+      border-top: 1px dashed var(--border-light);
+      background: #ffffff;
+    }
+
+    .accordion-item.open .accordion-body {
+      display: block;
+    }
+
+    .body-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toggle-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      background: var(--bg-page);
+      padding: 8px 10px;
+      border-radius: 10px;
+    }
+
+    .toggle-line input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    /* Info Boxes */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    @media (min-width: 560px) {
+      .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .info-box {
+      background: var(--bg-page);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+    }
+
+    .info-box-title {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .info-box-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-top: 3px;
+    }
+
+    .info-box-note {
+      font-size: 0.73rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    /* Buttons */
+    .btn {
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-soft {
+      background: var(--bg-soft);
+      color: var(--primary-dark);
+      border: 1px solid var(--border-light);
+    }
+
+    .btn-soft:hover {
+      background: var(--bg-accent-soft);
+    }
+
+    .btn-danger-soft {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid #fecaca;
+    }
+
+    .add-box {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .add-box input {
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .footer-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary-dark);
+      color: #ffffff;
+      padding: 9px 18px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(3, 105, 161, 0.28);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 99;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-title">
+        <h1>منصة حساب الرواتب والعلاوة والتقاعد</h1>
+        <p>سلم رواتب الأفراد (من جندي إلى رئيس رقباء) • تقويم هجري مع التاريخ الميلادي</p>
+      </div>
+      <div class="badge-hijri" id="todayDisplay">جارٍ التحميل...</div>
+    </div>
+
+    <!-- Top Summary Cards -->
+    <div class="summary-grid">
+      <div class="stat-card highlight">
+        <div class="stat-label">صافي الراتب الشهري</div>
+        <div class="stat-value success" id="netSalaryOut">0 ريال</div>
+        <div class="stat-sub" id="grossSalarySub">الإجمالي: 0 ريال</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">الراتب الأساسي</div>
+        <div class="stat-value" id="basicSalaryOut">0 ريال</div>
+        <div class="stat-sub" id="annualIncSub">العلاوة السنوية: 0 ريال</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">إجمالي البدلات</div>
+        <div class="stat-value" id="totalAllowancesOut">0 ريال</div>
+        <div class="stat-sub" id="deductionsSub">الحسميات: 0 ريال</div>
+      </div>
+
+      <div class="stat-card highlight">
+        <div class="stat-label">المعاش التقاعدي التقديري</div>
+        <div class="stat-value" id="pensionOut">0 ريال</div>
+        <div class="stat-sub" id="pensionRatioSub">معامل 420 شهر هجري</div>
+      </div>
+    </div>
+
+    <!-- Rank, Grade & Dates -->
+    <div class="card">
+      <div class="section-head">
+        <div class="section-title">الرتبة والدرجة والتواريخ (هجري / ميلادي)</div>
+        <span class="section-pill" id="rankBadge">رئيس رقباء - الدرجة 12</span>
+      </div>
+
+      <div class="form-grid cols-2" style="margin-bottom: 12px;">
+        <div class="field">
+          <label for="rankSelect">الرتبة العسكرية (أفراد)</label>
+          <select id="rankSelect"></select>
+        </div>
+
+        <div class="field">
+          <label for="gradeSelect">الدرجة الوظيفية (1 إلى 15)</label>
+          <select id="gradeSelect"></select>
+        </div>
+      </div>
+
+      <div class="form-grid cols-2">
+        <!-- Hijri Enlistment Date -->
+        <div class="field">
+          <label>تاريخ التعيين (هجري)</label>
+          <div class="hijri-row">
+            <select id="hireDay"></select>
+            <select id="hireMonth"></select>
+            <input type="number" id="hireYear" min="1380" max="1460" step="1" />
+          </div>
+          <div class="greg-hint" id="hireGregOut">الموافق ميلادي: —</div>
+        </div>
+
+        <!-- Hijri Birth Date -->
+        <div class="field">
+          <label>تاريخ الميلاد (هجري)</label>
+          <div class="hijri-row">
+            <select id="birthDay"></select>
+            <select id="birthMonth"></select>
+            <input type="number" id="birthYear" min="1350" max="1450" step="1" />
+          </div>
+          <div class="greg-hint" id="birthGregOut">الموافق ميلادي: —</div>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-box">
+          <div class="info-box-title">مدة الخدمة الحالية واستحقاق التقاعد</div>
+          <div class="info-box-val" id="serviceDurationOut">—</div>
+          <div class="info-box-note" id="retirementStatusOut">—</div>
+        </div>
+
+        <div class="info-box">
+          <div class="info-box-title">تاريخ التقاعد المتوقع (هجري / ميلادي)</div>
+          <div class="info-box-val" id="retirementHijriOut">—</div>
+          <div class="info-box-note" id="retirementGregOut">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Allowances Section -->
+    <div class="card">
+      <div class="section-head">
+        <div class="section-title">العلاوات والبدلات الشهرية</div>
+        <span class="section-pill" id="allowancesCountPill">0 بند</span>
+      </div>
+
+      <div class="accordion-list" id="allowancesList"></div>
+
+      <div class="add-box">
+        <input type="text" id="newAllowanceName" placeholder="اسم علاوة أو بدل جديد..." />
+        <input type="number" id="newAllowanceAmount" placeholder="المبلغ (ريال)" style="max-width: 140px;" />
+        <button class="btn btn-primary" id="addAllowanceBtn">+ إضافة بدل</button>
+      </div>
+    </div>
+
+    <!-- Deductions Section -->
+    <div class="card">
+      <div class="section-head">
+        <div class="section-title">الحسميات والاستقطاعات</div>
+        <span class="section-pill" id="deductionsTotalPill">0 ريال</span>
+      </div>
+
+      <div class="accordion-list" id="deductionsList"></div>
+
+      <div class="add-box">
+        <input type="text" id="newDeductionName" placeholder="اسم حسم أو استقطاع جديد..." />
+        <input type="number" id="newDeductionAmount" placeholder="المبلغ (ريال)" style="max-width: 140px;" />
+        <button class="btn btn-soft" id="addDeductionBtn">+ إضافة حسم</button>
+      </div>
+    </div>
+
+    <!-- End of Service, Leave Compensation & Custody Handover -->
+    <div class="card">
+      <div class="section-head">
+        <div class="section-title">مكافأة نهاية الخدمة • الإجازات • تسليم العهد</div>
+        <span class="section-pill" id="potAmountPill">وعاء الخدمة والإجازات: 0 ريال</span>
+      </div>
+
+      <div class="toggle-line" style="margin-bottom: 12px;">
+        <span>إضافة نسبة استقطاع التقاعد (9% من الراتب الأساسي) إلى وعاء مكافأة الخدمة والإجازات</span>
+        <input type="checkbox" id="includePensionInPot" checked />
+      </div>
+
+      <div class="form-grid cols-3" style="margin-bottom: 12px;">
+        <div class="field">
+          <label for="eosMonthsInput">مكافأة نهاية الخدمة (أشهر)</label>
+          <input type="number" id="eosMonthsInput" min="0" max="36" step="1" value="6" />
+        </div>
+
+        <div class="field">
+          <label for="custodyMonthsInput">تسليم العهد (أشهر كاملة مع البدلات)</label>
+          <input type="number" id="custodyMonthsInput" min="0" max="24" step="1" value="2" />
+        </div>
+
+        <div class="field">
+          <label for="leaveDaysInput">رصيد أيام الإجازات المتراكمة</label>
+          <input type="number" id="leaveDaysInput" min="0" max="1000" step="1" value="90" />
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-box">
+          <div class="info-box-title">مكافأة نهاية الخدمة (<span id="eosMonthsLabel">6</span> أشهر)</div>
+          <div class="info-box-val success" id="eosRewardOut">0 ريال</div>
+          <div class="info-box-note">وفق البدلات المختارة + حسم التقاعد 9% (إن فُعّل)</div>
+        </div>
+
+        <div class="info-box">
+          <div class="info-box-title">مكافأة تسليم العهد (<span id="custodyMonthsLabel">2</span> أشهر)</div>
+          <div class="info-box-val" id="custodyRewardOut">0 ريال</div>
+          <div class="info-box-note">محسوبة كاملة (الراتب الأساسي + كامل البدلات الفعّالة)</div>
+        </div>
+
+        <div class="info-box">
+          <div class="info-box-title">مجموع التعويض عن الإجازات</div>
+          <div class="info-box-val success" id="leaveCompOut">0 ريال</div>
+          <div class="info-box-note" id="leaveDayRateNote">قيمة اليوم الواحد: 0 ريال</div>
+        </div>
+
+        <div class="info-box">
+          <div class="info-box-title">إجمالي مستحقات نهاية الخدمة والإجازات والعهد</div>
+          <div class="info-box-val" id="grandEndTotalOut">0 ريال</div>
+          <div class="info-box-note">مكافأة الخدمة + تسليم العهد + تعويض الإجازات</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-actions">
+      <button class="btn btn-soft" id="saveNowBtn">حفظ الإعدادات الآن</button>
+      <button class="btn btn-danger-soft" id="resetDefaultBtn">استعادة القيم الافتراضية</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toastBox">تم الحفظ تلقائياً</div>
+
+  <script>
+    // Official Saudi Military Enlisted Salary Scale (Grade 1 & Annual Increment)
+    const RANKS = [
+      { id: 'private', name: 'جندي', grade1: 3220, increment: 130, transport: 500, pensionAge: 50 },
+      { id: 'pfc', name: 'جندي أول', grade1: 3395, increment: 145, transport: 500, pensionAge: 50 },
+      { id: 'corporal', name: 'عريف', grade1: 3765, increment: 175, transport: 500, pensionAge: 52 },
+      { id: 'staff_sgt', name: 'وكيل رقيب', grade1: 4455, increment: 210, transport: 500, pensionAge: 52 },
+      { id: 'sergeant', name: 'رقيب', grade1: 5260, increment: 250, transport: 500, pensionAge: 54 },
+      { id: 'first_sgt', name: 'رقيب أول', grade1: 6180, increment: 300, transport: 700, pensionAge: 56 },
+      { id: 'master_sgt', name: 'رئيس رقباء', grade1: 7215, increment: 360, transport: 700, pensionAge: 58 }
+    ];
+
+    const HIJRI_MONTHS = [
+      'محرم', 'صفر', 'ربيع الأول', 'ربيع الآخر',
+      'جمادى الأولى', 'جمادى الآخرة', 'رجب', 'شعبان',
+      'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
+    ];
+
+    const STORAGE_KEY = 'abu_samer_salary_platform_v1';
+
+    function defaultState() {
+      return {
+        rankId: 'master_sgt',
+        grade: 12,
+        hire: { day: 1, month: 9, year: 1422 },
+        birth: { day: 1, month: 1, year: 1400 },
+        overtimeRate: 25,
+        fieldAllowance: 450,
+        includePensionInPot: true,
+        eosMonths: 6,
+        custodyMonths: 2,
+        leaveDays: 90,
+        allowances: [
+          { id: 'danger', name: 'علاوة خطر', amount: 0, active: false, includeInEos: true, type: 'normal' },
+          { id: 'terror', name: 'علاوة مكافحة الإرهاب', amount: 0, active: false, includeInEos: true, type: 'normal' },
+          { id: 'overtime', name: 'مكافأة أعمال إضافية (25%)', amount: 0, active: true, includeInEos: false, type: 'overtime25' },
+          { id: 'extra_food', name: 'بدل إعاشة إضافية', amount: 500, active: true, includeInEos: true, type: 'normal' },
+          { id: 'field', name: 'بدل ميدان (شهري)', amount: 450, active: true, includeInEos: true, type: 'field450' },
+          { id: 'civil_def', name: 'علاوة الدفاع المدني', amount: 0, active: false, includeInEos: true, type: 'normal' },
+          { id: 'moto', name: 'علاوة ركوب الدراجة النارية', amount: 0, active: false, includeInEos: true, type: 'normal' },
+          { id: 'food', name: 'بدل الإعاشة', amount: 500, active: true, includeInEos: true, type: 'normal' },
+          { id: 'transport', name: 'بدل تنقلات', amount: 700, active: true, includeInEos: false, type: 'transportAuto' }
+        ],
+        deductions: [
+          { id: 'pension_ded', name: 'حسم التقاعد (9% من الراتب الأساسي)', amount: 0, active: true, type: 'pension9' }
+        ]
+      };
+    }
+
+    let state = loadState();
+    let openAccordions = new Set();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return defaultState();
+        const parsed = JSON.parse(raw);
+        return { ...defaultState(), ...parsed };
+      } catch (e) {
+        return defaultState();
+      }
+    }
+
+    function saveState(showMsg = false) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        if (showMsg) showToast('تم حفظ البيانات بنجاح');
+      } catch (e) {}
+    }
+
+    function showToast(text) {
+      const el = document.getElementById('toastBox');
+      el.textContent = text;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 1800);
+    }
+
+    function formatSAR(num) {
+      const val = Number.isFinite(num) ? num : 0;
+      return val.toLocaleString('ar-SA', { maximumFractionDigits: 2 }) + ' ريال';
+    }
+
+    // Approximate Hijri <-> Julian Day conversion for accurate display & calculation
+    function hijriToJD(hYear, hMonth, hDay) {
+      const y = Number(hYear) || 1422;
+      const m = Number(hMonth) || 1;
+      const d = Number(hDay) || 1;
+      return Math.floor((11 * y + 3) / 30) + 354 * y + 30 * m - Math.floor((m - 1) / 2) + d + 1948440 - 385;
+    }
+
+    function jdToGregorian(jd) {
+      const l = jd + 68569;
+      const n = Math.floor((4 * l) / 146097);
+      const l2 = l - Math.floor((146097 * n + 3) / 4);
+      const i = Math.floor((4000 * (l2 + 1)) / 1461001);
+      const l3 = l2 - Math.floor((1461 * i) / 4) + 31;
+      const j = Math.floor((80 * l3) / 2447);
+      const day = l3 - Math.floor((2447 * j) / 80);
+      const l4 = Math.floor(j / 11);
+      const month = j + 2 - 12 * l4;
+      const year = 100 * (n - 49) + i + l4;
+      return { year, month, day };
+    }
+
+    function gregorianToJD(gYear, gMonth, gDay) {
+      const a = Math.floor((14 - gMonth) / 12);
+      const y = gYear + 4800 - a;
+      const m = gMonth + 12 * a - 3;
+      return gDay + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+    }
+
+    function jdToHijri(jd) {
+      const l = jd - 1948440 + 10632;
+      const n = Math.floor((l - 1) / 10631);
+      const l2 = l - 10631 * n + 354;
+      const j = Math.floor((10985 - l2) / 5316) * Math.floor((50 * l2) / 17719) + Math.floor(l2 / 5670) * Math.floor((43 * l2) / 15238);
+      const l3 = l2 - Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) - Math.floor(j / 16) * Math.floor((15238 * j) / 43) + 29;
+      const month = Math.floor((24 * l3) / 709);
+      const day = l3 - Math.floor((709 * month) / 24);
+      const year = 30 * n + j - 30;
+      return { year, month, day };
+    }
+
+    function formatGreg(g) {
+      return `${g.year}-${String(g.month).padStart(2, '0')}-${String(g.day).padStart(2, '0')} م`;
+    }
+
+    function formatHijri(h) {
+      const mName = HIJRI_MONTHS[(h.month - 1 + 12) % 12] || h.month;
+      return `${h.day} ${mName} ${h.year} هـ`;
+    }
+
+    function initSelectors() {
+      const rankSelect = document.getElementById('rankSelect');
+      rankSelect.innerHTML = RANKS.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+
+      const gradeSelect = document.getElementById('gradeSelect');
+      gradeSelect.innerHTML = Array.from({ length: 15 }, (_, idx) => {
+        const g = idx + 1;
+        return `<option value="${g}">الدرجة ${g}</option>`;
+      }).join('');
+
+      const dayOpts = Array.from({ length: 30 }, (_, idx) => {
+        const d = idx + 1;
+        return `<option value="${d}">${d}</option>`;
+      }).join('');
+
+      const monthOpts = HIJRI_MONTHS.map((m, idx) => {
+        return `<option value="${idx + 1}">${idx + 1} - ${m}</option>`;
+      }).join('');
+
+      ['hireDay', 'birthDay'].forEach(id => document.getElementById(id).innerHTML = dayOpts);
+      ['hireMonth', 'birthMonth'].forEach(id => document.getElementById(id).innerHTML = monthOpts);
+    }
+
+    function syncInputsFromState() {
+      document.getElementById('rankSelect').value = state.rankId;
+      document.getElementById('gradeSelect').value = state.grade;
+
+      document.getElementById('hireDay').value = state.hire.day;
+      document.getElementById('hireMonth').value = state.hire.month;
+      document.getElementById('hireYear').value = state.hire.year;
+
+      document.getElementById('birthDay').value = state.birth.day;
+      document.getElementById('birthMonth').value = state.birth.month;
+      document.getElementById('birthYear').value = state.birth.year;
+
+      document.getElementById('includePensionInPot').checked = !!state.includePensionInPot;
+      document.getElementById('eosMonthsInput').value = state.eosMonths;
+      document.getElementById('custodyMonthsInput').value = state.custodyMonths;
+      document.getElementById('leaveDaysInput').value = state.leaveDays;
+    }
+
+    function getRankObj() {
+      return RANKS.find(r => r.id === state.rankId) || RANKS[RANKS.length - 1];
+    }
+
+    function getBasicSalary() {
+      const rank = getRankObj();
+      const grade = Math.min(15, Math.max(1, Number(state.grade) || 1));
+      return rank.grade1 + (grade - 1) * rank.increment;
+    }
+
+    function computeAllowanceValue(item, basicSalary) {
+      if (!item.active) return 0;
+      if (item.type === 'overtime25') {
+        return +(basicSalary * ((Number(state.overtimeRate) || 25) / 100)).toFixed(2);
+      }
+      if (item.type === 'field450') {
+        return Number(item.amount) || 0;
+      }
+      if (item.type === 'transportAuto') {
+        return Number(item.amount) || 0;
+      }
+      return Number(item.amount) || 0;
+    }
+
+    function computeDeductionValue(item, basicSalary) {
+      if (!item.active) return 0;
+      if (item.type === 'pension9') {
+        return +(basicSalary * 0.09).toFixed(2);
+      }
+      return Number(item.amount) || 0;
+    }
+
+    function renderAll() {
+      const rank = getRankObj();
+      const basicSalary = getBasicSalary();
+      const annualIncrement = rank.increment;
+
+      // Sync transport allowance default when rank changes if transportAuto
+      state.allowances.forEach(a => {
+        if (a.type === 'transportAuto' && a.id === 'transport' && a._lastRank !== rank.id) {
+          a.amount = rank.transport;
+          a._lastRank = rank.id;
+        }
+        if (a.type === 'overtime25') {
+          a.amount = +(basicSalary * ((Number(state.overtimeRate) || 25) / 100)).toFixed(2);
+        }
+      });
+
+      // Deductions calculation
+      let totalDeductions = 0;
+      let pension9Amount = 0;
+      state.deductions.forEach(d => {
+        const val = computeDeductionValue(d, basicSalary);
+        if (d.type === 'pension9') pension9Amount = val;
+        totalDeductions += val;
+      });
+
+      // Allowances calculation
+      let totalAllowances = 0;
+      let eosIncludedAllowancesTotal = 0;
+      state.allowances.forEach(a => {
+        const val = computeAllowanceValue(a, basicSalary);
+        totalAllowances += val;
+        if (a.active && a.includeInEos) {
+          eosIncludedAllowancesTotal += val;
+        }
+      });
+
+      const grossSalary = basicSalary + totalAllowances;
+      const netSalary = grossSalary - totalDeductions;
+
+      // Hijri Dates & Service Calculation
+      const now = new Date();
+      const todayJD = gregorianToJD(now.getFullYear(), now.getMonth() + 1, now.getDate());
+      const todayHijri = jdToHijri(todayJD);
+      document.getElementById('todayDisplay').textContent =
+        `${formatHijri(todayHijri)} | ${formatGreg({ year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() })}`;
+
+      const hireJD = hijriToJD(state.hire.year, state.hire.month, state.hire.day);
+      const birthJD = hijriToJD(state.birth.year, state.birth.month, state.birth.day);
+
+      document.getElementById('hireGregOut').textContent = `الموافق ميلادي: ${formatGreg(jdToGregorian(hireJD))}`;
+      document.getElementById('birthGregOut').textContent = `الموافق ميلادي: ${formatGreg(jdToGregorian(birthJD))}`;
+
+      const serviceDays = Math.max(0, todayJD - hireJD);
+      const serviceMonthsApprox = Math.floor(serviceDays / 29.53);
+      const serviceYears = Math.floor(serviceMonthsApprox / 12);
+      const remMonths = serviceMonthsApprox % 12;
+
+      document.getElementById('serviceDurationOut').textContent =
+        `${serviceYears} سنة و ${remMonths} شهر (${serviceMonthsApprox} شهر)`;
+
+      // Retirement date by pensionAge in Hijri years from birth
+      const retirementJD = hijriToJD(
+        (Number(state.birth.year) || 1400) + rank.pensionAge,
+        state.birth.month,
+        state.birth.day
+      );
+      const retirementHijri = jdToHijri(retirementJD);
+      const retirementGreg = jdToGregorian(retirementJD);
+
+      document.getElementById('retirementHijriOut').textContent = formatHijri(retirementHijri);
+      document.getElementById('retirementGregOut').textContent = `الموافق ميلادي: ${formatGreg(retirementGreg)}`;
+
+      const daysToRetirement = retirementJD - todayJD;
+      if (daysToRetirement <= 0) {
+        document.getElementById('retirementStatusOut').textContent =
+          `بلغ سن التقاعد النظامي لرتبة (${rank.name}: ${rank.pensionAge} سنة هجرية)`;
+      } else {
+        const remRetMonths = Math.floor(daysToRetirement / 29.53);
+        const remRetYears = Math.floor(remRetMonths / 12);
+        const remRetM = remRetMonths % 12;
+        document.getElementById('retirementStatusOut').textContent =
+          `متبقي على سن التقاعد (${rank.pensionAge} سنة): ${remRetYears} سنة و ${remRetM} شهر`;
+      }
+
+      // Projected service months at retirement for pension calculation (420 divisor, max 100% of basic salary)
+      const totalServiceMonthsAtRet = Math.max(serviceMonthsApprox, Math.floor(Math.max(0, retirementJD - hireJD) / 29.53));
+      const pensionCalc = Math.min(basicSalary, (basicSalary * totalServiceMonthsAtRet) / 420);
+
+      // Pot for End of Service & Leave Compensation:
+      // Basic Salary + Included Allowances - Excluded Allowances (not added) + Pension deduction (9% of basic salary) if toggled
+      const pensionAddition = state.includePensionInPot ? pension9Amount : 0;
+      const eosPot = basicSalary + eosIncludedAllowancesTotal + pensionAddition;
+
+      const eosMonths = Math.max(0, Number(state.eosMonths) || 0);
+      const eosReward = eosPot * eosMonths;
+
+      const leaveDays = Math.max(0, Number(state.leaveDays) || 0);
+      const leaveDayRate = eosPot / 30;
+      const leaveComp = leaveDays * leaveDayRate;
+
+      // Custody handover reward: full basic salary + full active allowances * custodyMonths
+      const custodyMonths = Math.max(0, Number(state.custodyMonths) || 0);
+      const custodyReward = (basicSalary + totalAllowances) * custodyMonths;
+
+      const grandEndTotal = eosReward + leaveComp + custodyReward;
+
+      // Update Summary Cards
+      document.getElementById('rankBadge').textContent = `${rank.name} • الدرجة ${state.grade}`;
+      document.getElementById('netSalaryOut').textContent = formatSAR(netSalary);
+      document.getElementById('grossSalarySub').textContent = `الإجمالي: ${formatSAR(grossSalary)}`;
+      document.getElementById('basicSalaryOut').textContent = formatSAR(basicSalary);
+      document.getElementById('annualIncSub').textContent = `العلاوة السنوية: ${formatSAR(annualIncrement)}`;
+      document.getElementById('totalAllowancesOut').textContent = formatSAR(totalAllowances);
+      document.getElementById('deductionsSub').textContent = `الحسميات: ${formatSAR(totalDeductions)}`;
+      document.getElementById('pensionOut').textContent = formatSAR(pensionCalc);
+      document.getElementById('pensionRatioSub').textContent =
+        `أشهر الخدمة التقديرية: ${totalServiceMonthsAtRet} شهر (معامل 420)`;
+
+      // Update End-of-Service & Leave Section
+      document.getElementById('potAmountPill').textContent = `وعاء الخدمة والإجازات: ${formatSAR(eosPot)}`;
+      document.getElementById('eosMonthsLabel').textContent = eosMonths;
+      document.getElementById('custodyMonthsLabel').textContent = custodyMonths;
+      document.getElementById('eosRewardOut').textContent = formatSAR(eosReward);
+      document.getElementById('custodyRewardOut').textContent = formatSAR(custodyReward);
+      document.getElementById('leaveCompOut').textContent = formatSAR(leaveComp);
+      document.getElementById('leaveDayRateNote').textContent = `قيمة اليوم الواحد: ${formatSAR(leaveDayRate)}`;
+      document.getElementById('grandEndTotalOut').textContent = formatSAR(grandEndTotal);
+
+      renderAllowancesAccordion(basicSalary);
+      renderDeductionsAccordion(basicSalary);
+    }
+
+    function renderAllowancesAccordion(basicSalary) {
+      const listEl = document.getElementById('allowancesList');
+      const activeCount = state.allowances.filter(a => a.active).length;
+      document.getElementById('allowancesCountPill').textContent =
+        `${activeCount} مفعّل من ${state.allowances.length}`;
+
+      listEl.innerHTML = state.allowances.map(item => {
+        const val = computeAllowanceValue(item, basicSalary);
+        const isOpen = openAccordions.has('allow_' + item.id);
+        const isOvertime = item.type === 'overtime25';
+        const canDelete = !['danger', 'terror', 'overtime', 'extra_food', 'field', 'civil_def', 'moto', 'food', 'transport'].includes(item.id);
+
+        return `
+          <div class="accordion-item ${isOpen ? 'open' : ''}" id="acc_allow_${item.id}">
+            <button type="button" class="accordion-trigger" onclick="toggleAccordion('allow_${item.id}')">
+              <div class="acc-right">
+                <span class="acc-name">${item.name}</span>
+                <span class="acc-tag ${item.includeInEos ? 'tag-included' : 'tag-excluded'}">
+                  ${item.includeInEos ? 'مشمول بالخدمة والإجازات' : 'مستبعد من الخدمة والإجازات'}
+                </span>
+                ${!item.active ? '<span class="acc-tag tag-excluded">معطّل</span>' : ''}
+              </div>
+              <div class="acc-left">
+                <span class="acc-amount">${formatSAR(val)}</span>
+                <span class="chevron">▼</span>
+              </div>
+            </button>
+            <div class="accordion-body">
+              <div class="body-controls">
+                <div class="toggle-line">
+                  <span>تفعيل البند في الراتب الشهري وتسليم العهد</span>
+                  <input type="checkbox" ${item.active ? 'checked' : ''} onchange="updateAllowanceField('${item.id}', 'active', this.checked)" />
+                </div>
+
+                <div class="toggle-line">
+                  <span>إدراج البند ضمن مكافأة نهاية الخدمة وتعويض الإجازات</span>
+                  <input type="checkbox" ${item.includeInEos ? 'checked' : ''} onchange="updateAllowanceField('${item.id}', 'includeInEos', this.checked)" />
+                </div>
+
+                ${isOvertime ? `
+                  <div class="field">
+                    <label>نسبة العمل الإضافي (% من الراتب الأساسي)</label>
+                    <input type="number" min="0" max="200" step="1" value="${state.overtimeRate}" onchange="updateOvertimeRate(this.value)" />
+                  </div>
+                ` : `
+                  <div class="field">
+                    <label>القيمة الشهرية (ريال سعودي)</label>
+                    <input type="number" min="0" step="10" value="${item.amount}" onchange="updateAllowanceField('${item.id}', 'amount', Number(this.value) || 0)" />
+                  </div>
+                `}
+
+                ${canDelete ? `
+                  <button type="button" class="btn btn-danger-soft" onclick="removeAllowance('${item.id}')">حذف البند</button>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderDeductionsAccordion(basicSalary) {
+      const listEl = document.getElementById('deductionsList');
+      let totalDed = 0;
+      state.deductions.forEach(d => totalDed += computeDeductionValue(d, basicSalary));
+      document.getElementById('deductionsTotalPill').textContent = formatSAR(totalDed);
+
+      listEl.innerHTML = state.deductions.map(item => {
+        const val = computeDeductionValue(item, basicSalary);
+        const isOpen = openAccordions.has('ded_' + item.id);
+        const isPension9 = item.type === 'pension9';
+
+        return `
+          <div class="accordion-item deduction ${isOpen ? 'open' : ''}" id="acc_ded_${item.id}">
+            <button type="button" class="accordion-trigger" onclick="toggleAccordion('ded_${item.id}')">
+              <div class="acc-right">
+                <span class="acc-name">${item.name}</span>
+                ${!item.active ? '<span class="acc-tag tag-excluded">معطّل</span>' : ''}
+              </div>
+              <div class="acc-left">
+                <span class="acc-amount">- ${formatSAR(val)}</span>
+                <span class="chevron">▼</span>
+              </div>
+            </button>
+            <div class="accordion-body">
+              <div class="body-controls">
+                <div class="toggle-line">
+                  <span>تفعيل الحسم / الاستقطاع</span>
+                  <input type="checkbox" ${item.active ? 'checked' : ''} onchange="updateDeductionField('${item.id}', 'active', this.checked)" />
+                </div>
+
+                ${isPension9 ? `
+                  <div class="greg-hint">يُحتسب تلقائياً بنسبة 9% من الراتب الأساسي (${formatSAR(basicSalary * 0.09)})</div>
+                ` : `
+                  <div class="field">
+                    <label>قيمة الحسم الشهري (ريال سعودي)</label>
+                    <input type="number" min="0" step="10" value="${item.amount}" onchange="updateDeductionField('${item.id}', 'amount', Number(this.value) || 0)" />
+                  </div>
+                  <button type="button" class="btn btn-danger-soft" onclick="removeDeduction('${item.id}')">حذف الحسم</button>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.toggleAccordion = function(key) {
+      if (openAccordions.has(key)) {
+        openAccordions.delete(key);
+      } else {
+        openAccordions.add(key);
+      }
+      renderAll();
+    };
+
+    window.updateAllowanceField = function(id, field, value) {
+      const target = state.allowances.find(a => a.id === id);
+      if (!target) return;
+      target[field] = value;
+      saveState();
+      renderAll();
+    };
+
+    window.updateOvertimeRate = function(val) {
+      state.overtimeRate = Math.max(0, Number(val) || 0);
+      const ot = state.allowances.find(a => a.type === 'overtime25');
+      if (ot) ot.name = `مكافأة أعمال إضافية (${state.overtimeRate}%)`;
+      saveState();
+      renderAll();
+    };
+
+    window.removeAllowance = function(id) {
+      state.allowances = state.allowances.filter(a => a.id !== id);
+      openAccordions.delete('allow_' + id);
+      saveState();
+      renderAll();
+    };
+
+    window.updateDeductionField = function(id, field, value) {
+      const target = state.deductions.find(d => d.id === id);
+      if (!target) return;
+      target[field] = value;
+      saveState();
+      renderAll();
+    };
+
+    window.removeDeduction = function(id) {
+      state.deductions = state.deductions.filter(d => d.id !== id);
+      openAccordions.delete('ded_' + id);
+      saveState();
+      renderAll();
+    };
+
+    function bindEvents() {
+      document.getElementById('rankSelect').addEventListener('change', e => {
+        state.rankId = e.target.value;
+        saveState();
+        renderAll();
+      });
+
+      document.getElementById('gradeSelect').addEventListener('change', e => {
+        state.grade = Number(e.target.value) || 1;
+        saveState();
+        renderAll();
+      });
+
+      ['hireDay', 'hireMonth', 'hireYear'].forEach(id => {
+        document.getElementById(id).addEventListener('change', () => {
+          state.hire.day = Number(document.getElementById('hireDay').value) || 1;
+          state.hire.month = Number(document.getElementById('hireMonth').value) || 1;
+          state.hire.year = Number(document.getElementById('hireYear').value) || 1422;
+          saveState();
+          renderAll();
+        });
+      });
+
+      ['birthDay', 'birthMonth', 'birthYear'].forEach(id => {
+        document.getElementById(id).addEventListener('change', () => {
+          state.birth.day = Number(document.getElementById('birthDay').value) || 1;
+          state.birth.month = Number(document.getElementById('birthMonth').value) || 1;
+          state.birth.year = Number(document.getElementById('birthYear').value) || 1400;
+          saveState();
+          renderAll();
+        });
+      });
+
+      document.getElementById('includePensionInPot').addEventListener('change', e => {
+        state.includePensionInPot = e.target.checked;
+        saveState();
+        renderAll();
+      });
+
+      document.getElementById('eosMonthsInput').addEventListener('input', e => {
+        state.eosMonths = Math.max(0, Number(e.target.value) || 0);
+        saveState();
+        renderAll();
+      });
+
+      document.getElementById('custodyMonthsInput').addEventListener('input', e => {
+        state.custodyMonths = Math.max(0, Number(e.target.value) || 0);
+        saveState();
+        renderAll();
+      });
+
+      document.getElementById('leaveDaysInput').addEventListener('input', e => {
+        state.leaveDays = Math.max(0, Number(e.target.value) || 0);
+        saveState();
+        renderAll();
+      });
+
+      document.getElementById('addAllowanceBtn').addEventListener('click', () => {
+        const nameEl = document.getElementById('newAllowanceName');
+        const amtEl = document.getElementById('newAllowanceAmount');
+        const name = nameEl.value.trim();
+        const amount = Number(amtEl.value) || 0;
+        if (!name) return;
+        state.allowances.push({
+          id: 'custom_a_' + Date.now(),
+          name,
+          amount,
+          active: true,
+          includeInEos: true,
+          type: 'normal'
+        });
+        nameEl.value = '';
+        amtEl.value = '';
+        saveState(true);
+        renderAll();
+      });
+
+      document.getElementById('addDeductionBtn').addEventListener('click', () => {
+        const nameEl = document.getElementById('newDeductionName');
+        const amtEl = document.getElementById('newDeductionAmount');
+        const name = nameEl.value.trim();
+        const amount = Number(amtEl.value) || 0;
+        if (!name) return;
+        state.deductions.push({
+          id: 'custom_d_' + Date.now(),
+          name,
+          amount,
+          active: true,
+          type: 'normal'
+        });
+        nameEl.value = '';
+        amtEl.value = '';
+        saveState(true);
+        renderAll();
+      });
+
+      document.getElementById('saveNowBtn').addEventListener('click', () => {
+        saveState(true);
+      });
+
+      document.getElementById('resetDefaultBtn').addEventListener('click', () => {
+        state = defaultState();
+        saveState(true);
+        syncInputsFromState();
+        renderAll();
+      });
+    }
+
+    initSelectors();
+    syncInputsFromState();
+    bindEvents();
+    renderAll();
+  </script>
+</body>
+</html>
