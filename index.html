@@ -48,7 +48,6 @@
       margin: 0 auto;
     }
 
-    /* Header */
     .header {
       background: linear-gradient(135deg, #ffffff 0%, #e6f3ff 100%);
       border: 1px solid var(--border-light);
@@ -85,7 +84,6 @@
       font-weight: 700;
     }
 
-    /* Summary Grid */
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -135,17 +133,12 @@
       color: var(--success);
     }
 
-    .stat-value.danger {
-      color: var(--danger);
-    }
-
     .stat-sub {
       font-size: 0.73rem;
       color: var(--text-muted);
       margin-top: 4px;
     }
 
-    /* Section Card */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border-light);
@@ -183,7 +176,6 @@
       font-weight: 700;
     }
 
-    /* Form Controls */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -245,7 +237,6 @@
       font-weight: 600;
     }
 
-    /* Accordion Items */
     .accordion-list {
       display: flex;
       flex-direction: column;
@@ -374,7 +365,6 @@
       cursor: pointer;
     }
 
-    /* Info Boxes */
     .info-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -414,7 +404,6 @@
       margin-top: 3px;
     }
 
-    /* Buttons */
     .btn {
       border: none;
       border-radius: var(--radius-sm);
@@ -499,7 +488,6 @@
 </head>
 <body>
   <div class="container">
-    <!-- Header -->
     <div class="header">
       <div class="header-title">
         <h1>منصة حساب الرواتب والعلاوة والتقاعد</h1>
@@ -508,7 +496,6 @@
       <div class="badge-hijri" id="todayDisplay">جارٍ التحميل...</div>
     </div>
 
-    <!-- Top Summary Cards -->
     <div class="summary-grid">
       <div class="stat-card highlight">
         <div class="stat-label">صافي الراتب الشهري</div>
@@ -535,11 +522,10 @@
       </div>
     </div>
 
-    <!-- Rank, Grade & Dates -->
     <div class="card">
       <div class="section-head">
         <div class="section-title">الرتبة والدرجة والتواريخ (هجري / ميلادي)</div>
-        <span class="section-pill" id="rankBadge">رئيس رقباء - الدرجة 12</span>
+        <span class="section-pill" id="rankBadge">رئيس رقباء • الدرجة 12</span>
       </div>
 
       <div class="form-grid cols-2" style="margin-bottom: 12px;">
@@ -555,7 +541,6 @@
       </div>
 
       <div class="form-grid cols-2">
-        <!-- Hijri Enlistment Date -->
         <div class="field">
           <label>تاريخ التعيين (هجري)</label>
           <div class="hijri-row">
@@ -566,7 +551,6 @@
           <div class="greg-hint" id="hireGregOut">الموافق ميلادي: —</div>
         </div>
 
-        <!-- Hijri Birth Date -->
         <div class="field">
           <label>تاريخ الميلاد (هجري)</label>
           <div class="hijri-row">
@@ -593,7 +577,6 @@
       </div>
     </div>
 
-    <!-- Allowances Section -->
     <div class="card">
       <div class="section-head">
         <div class="section-title">العلاوات والبدلات الشهرية</div>
@@ -609,7 +592,6 @@
       </div>
     </div>
 
-    <!-- Deductions Section -->
     <div class="card">
       <div class="section-head">
         <div class="section-title">الحسميات والاستقطاعات</div>
@@ -625,7 +607,6 @@
       </div>
     </div>
 
-    <!-- End of Service, Leave Compensation & Custody Handover -->
     <div class="card">
       <div class="section-head">
         <div class="section-title">مكافأة نهاية الخدمة • الإجازات • تسليم العهد</div>
@@ -690,15 +671,15 @@
   <div class="toast" id="toastBox">تم الحفظ تلقائياً</div>
 
   <script>
-    // Official Saudi Military Enlisted Salary Scale (Grade 1 & Annual Increment)
+    // Official Saudi Military Enlisted Scale & Retirement Age per Rank
     const RANKS = [
-      { id: 'private', name: 'جندي', grade1: 3220, increment: 130, transport: 500, pensionAge: 50 },
-      { id: 'pfc', name: 'جندي أول', grade1: 3395, increment: 145, transport: 500, pensionAge: 50 },
-      { id: 'corporal', name: 'عريف', grade1: 3765, increment: 175, transport: 500, pensionAge: 52 },
-      { id: 'staff_sgt', name: 'وكيل رقيب', grade1: 4455, increment: 210, transport: 500, pensionAge: 52 },
-      { id: 'sergeant', name: 'رقيب', grade1: 5260, increment: 250, transport: 500, pensionAge: 54 },
-      { id: 'first_sgt', name: 'رقيب أول', grade1: 6180, increment: 300, transport: 700, pensionAge: 56 },
-      { id: 'master_sgt', name: 'رئيس رقباء', grade1: 7215, increment: 360, transport: 700, pensionAge: 58 }
+      { id: 'private', name: 'جندي', grade1: 3220, increment: 130, transport: 500, pensionAge: 44 },
+      { id: 'pfc', name: 'جندي أول', grade1: 3395, increment: 145, transport: 500, pensionAge: 44 },
+      { id: 'corporal', name: 'عريف', grade1: 3765, increment: 175, transport: 500, pensionAge: 46 },
+      { id: 'staff_sgt', name: 'وكيل رقيب', grade1: 4455, increment: 210, transport: 500, pensionAge: 48 },
+      { id: 'sergeant', name: 'رقيب', grade1: 5260, increment: 250, transport: 500, pensionAge: 50 },
+      { id: 'first_sgt', name: 'رقيب أول', grade1: 6180, increment: 300, transport: 700, pensionAge: 50 },
+      { id: 'master_sgt', name: 'رئيس رقباء', grade1: 7215, increment: 360, transport: 700, pensionAge: 52 }
     ];
 
     const HIJRI_MONTHS = [
@@ -707,7 +688,7 @@
       'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
     ];
 
-    const STORAGE_KEY = 'abu_samer_salary_platform_v1';
+    const STORAGE_KEY = 'abu_samer_salary_platform_v3';
 
     function defaultState() {
       return {
@@ -716,14 +697,14 @@
         hire: { day: 1, month: 9, year: 1422 },
         birth: { day: 1, month: 1, year: 1400 },
         overtimeRate: 25,
-        fieldAllowance: 450,
+        terrorRate: 25,
         includePensionInPot: true,
         eosMonths: 6,
         custodyMonths: 2,
         leaveDays: 90,
         allowances: [
           { id: 'danger', name: 'علاوة خطر', amount: 0, active: false, includeInEos: true, type: 'normal' },
-          { id: 'terror', name: 'علاوة مكافحة الإرهاب', amount: 0, active: false, includeInEos: true, type: 'normal' },
+          { id: 'terror', name: 'علاوة مكافحة الإرهاب (25% من الدرجة 1)', amount: 0, active: true, includeInEos: true, type: 'terrorGrade1' },
           { id: 'overtime', name: 'مكافأة أعمال إضافية (25%)', amount: 0, active: true, includeInEos: false, type: 'overtime25' },
           { id: 'extra_food', name: 'بدل إعاشة إضافية', amount: 500, active: true, includeInEos: true, type: 'normal' },
           { id: 'field', name: 'بدل ميدان (شهري)', amount: 450, active: true, includeInEos: true, type: 'field450' },
@@ -771,7 +752,6 @@
       return val.toLocaleString('ar-SA', { maximumFractionDigits: 2 }) + ' ريال';
     }
 
-    // Approximate Hijri <-> Julian Day conversion for accurate display & calculation
     function hijriToJD(hYear, hMonth, hDay) {
       const y = Number(hYear) || 1422;
       const m = Number(hMonth) || 1;
@@ -823,7 +803,7 @@
 
     function initSelectors() {
       const rankSelect = document.getElementById('rankSelect');
-      rankSelect.innerHTML = RANKS.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+      rankSelect.innerHTML = RANKS.map(r => `<option value="${r.id}">${r.name} (تقاعد ${r.pensionAge} سنة)</option>`).join('');
 
       const gradeSelect = document.getElementById('gradeSelect');
       gradeSelect.innerHTML = Array.from({ length: 15 }, (_, idx) => {
@@ -872,16 +852,13 @@
       return rank.grade1 + (grade - 1) * rank.increment;
     }
 
-    function computeAllowanceValue(item, basicSalary) {
+    function computeAllowanceValue(item, basicSalary, rank) {
       if (!item.active) return 0;
+      if (item.type === 'terrorGrade1') {
+        return +(rank.grade1 * ((Number(state.terrorRate) || 25) / 100)).toFixed(2);
+      }
       if (item.type === 'overtime25') {
         return +(basicSalary * ((Number(state.overtimeRate) || 25) / 100)).toFixed(2);
-      }
-      if (item.type === 'field450') {
-        return Number(item.amount) || 0;
-      }
-      if (item.type === 'transportAuto') {
-        return Number(item.amount) || 0;
       }
       return Number(item.amount) || 0;
     }
@@ -899,18 +876,21 @@
       const basicSalary = getBasicSalary();
       const annualIncrement = rank.increment;
 
-      // Sync transport allowance default when rank changes if transportAuto
       state.allowances.forEach(a => {
         if (a.type === 'transportAuto' && a.id === 'transport' && a._lastRank !== rank.id) {
           a.amount = rank.transport;
           a._lastRank = rank.id;
         }
+        if (a.type === 'terrorGrade1') {
+          a.amount = +(rank.grade1 * ((Number(state.terrorRate) || 25) / 100)).toFixed(2);
+          a.name = `علاوة مكافحة الإرهاب (${state.terrorRate}% من الدرجة 1)`;
+        }
         if (a.type === 'overtime25') {
           a.amount = +(basicSalary * ((Number(state.overtimeRate) || 25) / 100)).toFixed(2);
+          a.name = `مكافأة أعمال إضافية (${state.overtimeRate}%)`;
         }
       });
 
-      // Deductions calculation
       let totalDeductions = 0;
       let pension9Amount = 0;
       state.deductions.forEach(d => {
@@ -919,11 +899,10 @@
         totalDeductions += val;
       });
 
-      // Allowances calculation
       let totalAllowances = 0;
       let eosIncludedAllowancesTotal = 0;
       state.allowances.forEach(a => {
-        const val = computeAllowanceValue(a, basicSalary);
+        const val = computeAllowanceValue(a, basicSalary, rank);
         totalAllowances += val;
         if (a.active && a.includeInEos) {
           eosIncludedAllowancesTotal += val;
@@ -933,7 +912,6 @@
       const grossSalary = basicSalary + totalAllowances;
       const netSalary = grossSalary - totalDeductions;
 
-      // Hijri Dates & Service Calculation
       const now = new Date();
       const todayJD = gregorianToJD(now.getFullYear(), now.getMonth() + 1, now.getDate());
       const todayHijri = jdToHijri(todayJD);
@@ -954,7 +932,6 @@
       document.getElementById('serviceDurationOut').textContent =
         `${serviceYears} سنة و ${remMonths} شهر (${serviceMonthsApprox} شهر)`;
 
-      // Retirement date by pensionAge in Hijri years from birth
       const retirementJD = hijriToJD(
         (Number(state.birth.year) || 1400) + rank.pensionAge,
         state.birth.month,
@@ -978,12 +955,9 @@
           `متبقي على سن التقاعد (${rank.pensionAge} سنة): ${remRetYears} سنة و ${remRetM} شهر`;
       }
 
-      // Projected service months at retirement for pension calculation (420 divisor, max 100% of basic salary)
       const totalServiceMonthsAtRet = Math.max(serviceMonthsApprox, Math.floor(Math.max(0, retirementJD - hireJD) / 29.53));
       const pensionCalc = Math.min(basicSalary, (basicSalary * totalServiceMonthsAtRet) / 420);
 
-      // Pot for End of Service & Leave Compensation:
-      // Basic Salary + Included Allowances - Excluded Allowances (not added) + Pension deduction (9% of basic salary) if toggled
       const pensionAddition = state.includePensionInPot ? pension9Amount : 0;
       const eosPot = basicSalary + eosIncludedAllowancesTotal + pensionAddition;
 
@@ -994,13 +968,11 @@
       const leaveDayRate = eosPot / 30;
       const leaveComp = leaveDays * leaveDayRate;
 
-      // Custody handover reward: full basic salary + full active allowances * custodyMonths
       const custodyMonths = Math.max(0, Number(state.custodyMonths) || 0);
       const custodyReward = (basicSalary + totalAllowances) * custodyMonths;
 
       const grandEndTotal = eosReward + leaveComp + custodyReward;
 
-      // Update Summary Cards
       document.getElementById('rankBadge').textContent = `${rank.name} • الدرجة ${state.grade}`;
       document.getElementById('netSalaryOut').textContent = formatSAR(netSalary);
       document.getElementById('grossSalarySub').textContent = `الإجمالي: ${formatSAR(grossSalary)}`;
@@ -1012,7 +984,6 @@
       document.getElementById('pensionRatioSub').textContent =
         `أشهر الخدمة التقديرية: ${totalServiceMonthsAtRet} شهر (معامل 420)`;
 
-      // Update End-of-Service & Leave Section
       document.getElementById('potAmountPill').textContent = `وعاء الخدمة والإجازات: ${formatSAR(eosPot)}`;
       document.getElementById('eosMonthsLabel').textContent = eosMonths;
       document.getElementById('custodyMonthsLabel').textContent = custodyMonths;
@@ -1022,20 +993,21 @@
       document.getElementById('leaveDayRateNote').textContent = `قيمة اليوم الواحد: ${formatSAR(leaveDayRate)}`;
       document.getElementById('grandEndTotalOut').textContent = formatSAR(grandEndTotal);
 
-      renderAllowancesAccordion(basicSalary);
+      renderAllowancesAccordion(basicSalary, rank);
       renderDeductionsAccordion(basicSalary);
     }
 
-    function renderAllowancesAccordion(basicSalary) {
+    function renderAllowancesAccordion(basicSalary, rank) {
       const listEl = document.getElementById('allowancesList');
       const activeCount = state.allowances.filter(a => a.active).length;
       document.getElementById('allowancesCountPill').textContent =
         `${activeCount} مفعّل من ${state.allowances.length}`;
 
       listEl.innerHTML = state.allowances.map(item => {
-        const val = computeAllowanceValue(item, basicSalary);
+        const val = computeAllowanceValue(item, basicSalary, rank);
         const isOpen = openAccordions.has('allow_' + item.id);
         const isOvertime = item.type === 'overtime25';
+        const isTerror = item.type === 'terrorGrade1';
         const canDelete = !['danger', 'terror', 'overtime', 'extra_food', 'field', 'civil_def', 'moto', 'food', 'transport'].includes(item.id);
 
         return `
@@ -1065,7 +1037,13 @@
                   <input type="checkbox" ${item.includeInEos ? 'checked' : ''} onchange="updateAllowanceField('${item.id}', 'includeInEos', this.checked)" />
                 </div>
 
-                ${isOvertime ? `
+                ${isTerror ? `
+                  <div class="field">
+                    <label>نسبة علاوة مكافحة الإرهاب (% من راتب الدرجة الأولى لـ ${rank.name}: ${formatSAR(rank.grade1)})</label>
+                    <input type="number" min="0" max="200" step="1" value="${state.terrorRate}" onchange="updateTerrorRate(this.value)" />
+                  </div>
+                  <div class="greg-hint">محسوبة من راتب الدرجة الأولى لرتبة (${rank.name}): ${formatSAR(rank.grade1)} × ${state.terrorRate}% = ${formatSAR(val)}</div>
+                ` : isOvertime ? `
                   <div class="field">
                     <label>نسبة العمل الإضافي (% من الراتب الأساسي)</label>
                     <input type="number" min="0" max="200" step="1" value="${state.overtimeRate}" onchange="updateOvertimeRate(this.value)" />
@@ -1150,10 +1128,14 @@
       renderAll();
     };
 
+    window.updateTerrorRate = function(val) {
+      state.terrorRate = Math.max(0, Number(val) || 0);
+      saveState();
+      renderAll();
+    };
+
     window.updateOvertimeRate = function(val) {
       state.overtimeRate = Math.max(0, Number(val) || 0);
-      const ot = state.allowances.find(a => a.type === 'overtime25');
-      if (ot) ot.name = `مكافأة أعمال إضافية (${state.overtimeRate}%)`;
       saveState();
       renderAll();
     };
