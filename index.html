@@ -630,13 +630,8 @@
 
       <div class="body-controls" style="margin-bottom: 12px;">
         <div class="toggle-line">
-          <span>إضافة نسبة استقطاع التقاعد (9% من الراتب الأساسي) إلى مكافأة نهاية الخدمة</span>
-          <input type="checkbox" id="includePensionInEos" checked />
-        </div>
-
-        <div class="toggle-line">
-          <span>إضافة نسبة استقطاع التقاعد (9% من الراتب الأساسي) إلى تعويض الإجازات</span>
-          <input type="checkbox" id="includePensionInLeave" checked />
+          <span>إضافة نسبة استقطاع التقاعد (9% من الراتب الأساسي) إلى مكافأة نهاية الخدمة وتعويض الإجازات</span>
+          <input type="checkbox" id="includePensionInEosAndLeave" checked />
         </div>
       </div>
 
@@ -709,7 +704,7 @@
       'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
     ];
 
-    const STORAGE_KEY = 'abu_samer_salary_platform_v7';
+    const STORAGE_KEY = 'abu_samer_salary_platform_v8';
 
     function defaultState() {
       return {
@@ -719,8 +714,7 @@
         birth: { day: 1, month: 1, year: 1400 },
         overtimeRate: 25,
         terrorRate: 25,
-        includePensionInEos: true,
-        includePensionInLeave: true,
+        includePensionInEosAndLeave: true,
         eosMonths: 6,
         custodyMonths: 2,
         leaveDays: 90,
@@ -858,8 +852,7 @@
       document.getElementById('birthMonth').value = state.birth.month;
       document.getElementById('birthYear').value = state.birth.year;
 
-      document.getElementById('includePensionInEos').checked = !!state.includePensionInEos;
-      document.getElementById('includePensionInLeave').checked = !!state.includePensionInLeave;
+      document.getElementById('includePensionInEosAndLeave').checked = !!state.includePensionInEosAndLeave;
       document.getElementById('eosMonthsInput').value = state.eosMonths;
       document.getElementById('custodyMonthsInput').value = state.custodyMonths;
       document.getElementById('leaveDaysInput').value = state.leaveDays;
@@ -1012,11 +1005,9 @@
       const totalServiceMonthsAtRet = Math.max(serviceMonthsApprox, Math.floor(Math.max(0, retirementJD - hireJD) / 29.53));
       const pensionCalc = Math.min(basicSalary, (basicSalary * totalServiceMonthsAtRet) / 420);
 
-      const eosPensionAdd = state.includePensionInEos ? pension9Amount : 0;
-      const eosPot = basicSalary + eosIncludedAllowancesTotal + eosPensionAdd;
-
-      const leavePensionAdd = state.includePensionInLeave ? pension9Amount : 0;
-      const leavePot = basicSalary + leaveIncludedAllowancesTotal + leavePensionAdd;
+      const pensionAdd = state.includePensionInEosAndLeave ? pension9Amount : 0;
+      const eosPot = basicSalary + eosIncludedAllowancesTotal + pensionAdd;
+      const leavePot = basicSalary + leaveIncludedAllowancesTotal + pensionAdd;
 
       const eosMonths = Math.max(0, Number(state.eosMonths) || 0);
       const eosReward = eosPot * eosMonths;
@@ -1263,14 +1254,8 @@
         });
       });
 
-      document.getElementById('includePensionInEos').addEventListener('change', e => {
-        state.includePensionInEos = e.target.checked;
-        saveState();
-        renderAll();
-      });
-
-      document.getElementById('includePensionInLeave').addEventListener('change', e => {
-        state.includePensionInLeave = e.target.checked;
+      document.getElementById('includePensionInEosAndLeave').addEventListener('change', e => {
+        state.includePensionInEosAndLeave = e.target.checked;
         saveState();
         renderAll();
       });
