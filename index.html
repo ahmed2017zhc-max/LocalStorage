@@ -238,7 +238,7 @@
       font-weight: 600;
     }
 
-    .date-iso {
+    .date-ltr {
       unicode-bidi: isolate;
       direction: ltr;
       display: inline-block;
@@ -710,7 +710,7 @@
       'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
     ];
 
-    const STORAGE_KEY = 'abu_samer_salary_platform_v10';
+    const STORAGE_KEY = 'abu_samer_salary_platform_v11';
 
     function defaultState() {
       return {
@@ -817,7 +817,7 @@
     function formatGreg(g) {
       const d = String(g.day).padStart(2, '0');
       const m = String(g.month).padStart(2, '0');
-      return `<span class="date-iso">${d}/${m}/${g.year}</span> م`;
+      return `<span class="date-ltr">${d} / ${m} / ${g.year}</span> م`;
     }
 
     function formatHijri(h) {
