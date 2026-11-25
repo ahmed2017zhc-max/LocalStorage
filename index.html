@@ -156,6 +156,7 @@
       margin-bottom: 14px;
       padding-bottom: 10px;
       border-bottom: 1px solid var(--bg-soft);
+      flex-wrap: wrap;
     }
 
     .section-title {
@@ -172,7 +173,7 @@
       color: var(--primary-dark);
       padding: 3px 10px;
       border-radius: 999px;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 700;
     }
 
@@ -276,7 +277,7 @@
     .acc-right {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
@@ -286,7 +287,7 @@
     }
 
     .acc-tag {
-      font-size: 0.7rem;
+      font-size: 0.69rem;
       padding: 2px 8px;
       border-radius: 999px;
       font-weight: 700;
@@ -343,7 +344,7 @@
     .body-controls {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .toggle-line {
@@ -354,8 +355,9 @@
       font-size: 0.82rem;
       font-weight: 700;
       background: var(--bg-page);
-      padding: 8px 10px;
+      padding: 9px 12px;
       border-radius: 10px;
+      border: 1px solid #e2effc;
     }
 
     .toggle-line input[type="checkbox"] {
@@ -363,6 +365,7 @@
       height: 18px;
       accent-color: var(--primary);
       cursor: pointer;
+      flex-shrink: 0;
     }
 
     .info-grid {
@@ -622,12 +625,19 @@
     <div class="card">
       <div class="section-head">
         <div class="section-title">مكافأة نهاية الخدمة • الإجازات • تسليم العهد</div>
-        <span class="section-pill" id="potAmountPill">وعاء الخدمة والإجازات: 0 ريال</span>
+        <span class="section-pill" id="potsSummaryPill">الخدمة: 0 | الإجازات: 0</span>
       </div>
 
-      <div class="toggle-line" style="margin-bottom: 12px;">
-        <span>إضافة نسبة استقطاع التقاعد (9% من الراتب الأساسي) إلى وعاء مكافأة الخدمة والإجازات</span>
-        <input type="checkbox" id="includePensionInPot" checked />
+      <div class="body-controls" style="margin-bottom: 12px;">
+        <div class="toggle-line">
+          <span>إضافة نسبة استقطاع التقاعد (9% من الراتب الأساسي) إلى مكافأة نهاية الخدمة</span>
+          <input type="checkbox" id="includePensionInEos" checked />
+        </div>
+
+        <div class="toggle-line">
+          <span>إضافة نسبة استقطاع التقاعد (9% من الراتب الأساسي) إلى تعويض الإجازات</span>
+          <input type="checkbox" id="includePensionInLeave" checked />
+        </div>
       </div>
 
       <div class="form-grid cols-3" style="margin-bottom: 12px;">
@@ -651,19 +661,19 @@
         <div class="info-box">
           <div class="info-box-title">مكافأة نهاية الخدمة (<span id="eosMonthsLabel">6</span> أشهر)</div>
           <div class="info-box-val success" id="eosRewardOut">0 ريال</div>
-          <div class="info-box-note">وفق البدلات المختارة + حسم التقاعد 9% (إن فُعّل)</div>
+          <div class="info-box-note" id="eosPotNote">وعاء الخدمة: 0 ريال</div>
+        </div>
+
+        <div class="info-box">
+          <div class="info-box-title">مجموع التعويض عن الإجازات</div>
+          <div class="info-box-val success" id="leaveCompOut">0 ريال</div>
+          <div class="info-box-note" id="leaveDayRateNote">وعاء الإجازات: 0 ريال • اليوم: 0 ريال</div>
         </div>
 
         <div class="info-box">
           <div class="info-box-title">مكافأة تسليم العهد (<span id="custodyMonthsLabel">2</span> أشهر)</div>
           <div class="info-box-val" id="custodyRewardOut">0 ريال</div>
           <div class="info-box-note">محسوبة كاملة (الراتب الأساسي + كامل البدلات الفعّالة)</div>
-        </div>
-
-        <div class="info-box">
-          <div class="info-box-title">مجموع التعويض عن الإجازات</div>
-          <div class="info-box-val success" id="leaveCompOut">0 ريال</div>
-          <div class="info-box-note" id="leaveDayRateNote">قيمة اليوم الواحد: 0 ريال</div>
         </div>
 
         <div class="info-box">
@@ -683,7 +693,6 @@
   <div class="toast" id="toastBox">تم الحفظ تلقائياً</div>
 
   <script>
-    // Official Saudi Military Enlisted Scale & Retirement Age per Rank
     const RANKS = [
       { id: 'private', name: 'جندي', grade1: 3220, increment: 130, transport: 500, pensionAge: 44 },
       { id: 'pfc', name: 'جندي أول', grade1: 3395, increment: 145, transport: 500, pensionAge: 44 },
@@ -700,7 +709,7 @@
       'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
     ];
 
-    const STORAGE_KEY = 'abu_samer_salary_platform_v4';
+    const STORAGE_KEY = 'abu_samer_salary_platform_v5';
 
     function defaultState() {
       return {
@@ -710,20 +719,21 @@
         birth: { day: 1, month: 1, year: 1400 },
         overtimeRate: 25,
         terrorRate: 25,
-        includePensionInPot: true,
+        includePensionInEos: true,
+        includePensionInLeave: true,
         eosMonths: 6,
         custodyMonths: 2,
         leaveDays: 90,
         allowances: [
-          { id: 'danger', name: 'علاوة خطر', amount: 0, active: false, includeInEos: true, type: 'normal' },
-          { id: 'terror', name: 'علاوة مكافحة الإرهاب (25% من الدرجة 1)', amount: 0, active: true, includeInEos: true, type: 'terrorGrade1' },
-          { id: 'overtime', name: 'مكافأة أعمال إضافية (25%)', amount: 0, active: true, includeInEos: false, type: 'overtime25' },
-          { id: 'extra_food', name: 'بدل إعاشة إضافية', amount: 500, active: true, includeInEos: true, type: 'normal' },
-          { id: 'field', name: 'بدل ميدان (شهري)', amount: 450, active: true, includeInEos: true, type: 'field450' },
-          { id: 'civil_def', name: 'علاوة الدفاع المدني', amount: 0, active: false, includeInEos: true, type: 'normal' },
-          { id: 'moto', name: 'علاوة ركوب الدراجة النارية', amount: 0, active: false, includeInEos: true, type: 'normal' },
-          { id: 'food', name: 'بدل الإعاشة', amount: 500, active: true, includeInEos: true, type: 'normal' },
-          { id: 'transport', name: 'بدل تنقلات', amount: 700, active: true, includeInEos: false, type: 'transportAuto' }
+          { id: 'danger', name: 'علاوة خطر', amount: 0, active: false, includeInEos: true, includeInLeave: true, type: 'normal' },
+          { id: 'terror', name: 'علاوة مكافحة الإرهاب (25% من الدرجة 1)', amount: 0, active: true, includeInEos: true, includeInLeave: true, type: 'terrorGrade1' },
+          { id: 'overtime', name: 'مكافأة أعمال إضافية (25%)', amount: 0, active: true, includeInEos: false, includeInLeave: false, type: 'overtime25' },
+          { id: 'extra_food', name: 'بدل إعاشة إضافية', amount: 500, active: true, includeInEos: true, includeInLeave: true, type: 'normal' },
+          { id: 'field', name: 'بدل ميدان (شهري)', amount: 450, active: true, includeInEos: true, includeInLeave: true, type: 'field450' },
+          { id: 'civil_def', name: 'علاوة الدفاع المدني', amount: 0, active: false, includeInEos: true, includeInLeave: true, type: 'normal' },
+          { id: 'moto', name: 'علاوة ركوب الدراجة النارية', amount: 0, active: false, includeInEos: true, includeInLeave: true, type: 'normal' },
+          { id: 'food', name: 'بدل الإعاشة', amount: 500, active: true, includeInEos: true, includeInLeave: true, type: 'normal' },
+          { id: 'transport', name: 'بدل تنقلات', amount: 700, active: true, includeInEos: false, includeInLeave: false, type: 'transportAuto' }
         ],
         deductions: [
           { id: 'pension_ded', name: 'حسم التقاعد (9% من الراتب الأساسي)', amount: 0, active: true, type: 'pension9' }
@@ -848,7 +858,8 @@
       document.getElementById('birthMonth').value = state.birth.month;
       document.getElementById('birthYear').value = state.birth.year;
 
-      document.getElementById('includePensionInPot').checked = !!state.includePensionInPot;
+      document.getElementById('includePensionInEos').checked = !!state.includePensionInEos;
+      document.getElementById('includePensionInLeave').checked = !!state.includePensionInLeave;
       document.getElementById('eosMonthsInput').value = state.eosMonths;
       document.getElementById('custodyMonthsInput').value = state.custodyMonths;
       document.getElementById('leaveDaysInput').value = state.leaveDays;
@@ -914,11 +925,16 @@
 
       let totalAllowances = 0;
       let eosIncludedAllowancesTotal = 0;
+      let leaveIncludedAllowancesTotal = 0;
+
       state.allowances.forEach(a => {
         const val = computeAllowanceValue(a, basicSalary, rank);
         totalAllowances += val;
         if (a.active && a.includeInEos) {
           eosIncludedAllowancesTotal += val;
+        }
+        if (a.active && a.includeInLeave) {
+          leaveIncludedAllowancesTotal += val;
         }
       });
 
@@ -935,7 +951,6 @@
       document.getElementById('todayDisplay').textContent =
         `${formatHijri(todayHijri)} | ${formatGreg({ year: gYearNow, month: gMonthNow, day: gDayNow })}`;
 
-      // Next Annual Increment on 1/1 Gregorian
       const nextIncGregYear = (gMonthNow === 1 && gDayNow === 1) ? gYearNow : gYearNow + 1;
       const nextIncJD = gregorianToJD(nextIncGregYear, 1, 1);
       const nextIncHijri = jdToHijri(nextIncJD);
@@ -997,14 +1012,18 @@
       const totalServiceMonthsAtRet = Math.max(serviceMonthsApprox, Math.floor(Math.max(0, retirementJD - hireJD) / 29.53));
       const pensionCalc = Math.min(basicSalary, (basicSalary * totalServiceMonthsAtRet) / 420);
 
-      const pensionAddition = state.includePensionInPot ? pension9Amount : 0;
-      const eosPot = basicSalary + eosIncludedAllowancesTotal + pensionAddition;
+      // Separate pots for End of Service vs Leave Compensation
+      const eosPensionAdd = state.includePensionInEos ? pension9Amount : 0;
+      const eosPot = basicSalary + eosIncludedAllowancesTotal + eosPensionAdd;
+
+      const leavePensionAdd = state.includePensionInLeave ? pension9Amount : 0;
+      const leavePot = basicSalary + leaveIncludedAllowancesTotal + leavePensionAdd;
 
       const eosMonths = Math.max(0, Number(state.eosMonths) || 0);
       const eosReward = eosPot * eosMonths;
 
       const leaveDays = Math.max(0, Number(state.leaveDays) || 0);
-      const leaveDayRate = eosPot / 30;
+      const leaveDayRate = leavePot / 30;
       const leaveComp = leaveDays * leaveDayRate;
 
       const custodyMonths = Math.max(0, Number(state.custodyMonths) || 0);
@@ -1023,13 +1042,16 @@
       document.getElementById('pensionRatioSub').textContent =
         `أشهر الخدمة التقديرية: ${totalServiceMonthsAtRet} شهر (معامل 420)`;
 
-      document.getElementById('potAmountPill').textContent = `وعاء الخدمة والإجازات: ${formatSAR(eosPot)}`;
+      document.getElementById('potsSummaryPill').textContent =
+        `وعاء الخدمة: ${formatSAR(eosPot)} • وعاء الإجازات: ${formatSAR(leavePot)}`;
       document.getElementById('eosMonthsLabel').textContent = eosMonths;
       document.getElementById('custodyMonthsLabel').textContent = custodyMonths;
       document.getElementById('eosRewardOut').textContent = formatSAR(eosReward);
+      document.getElementById('eosPotNote').textContent = `وعاء مكافأة الخدمة: ${formatSAR(eosPot)}`;
       document.getElementById('custodyRewardOut').textContent = formatSAR(custodyReward);
       document.getElementById('leaveCompOut').textContent = formatSAR(leaveComp);
-      document.getElementById('leaveDayRateNote').textContent = `قيمة اليوم الواحد: ${formatSAR(leaveDayRate)}`;
+      document.getElementById('leaveDayRateNote').textContent =
+        `وعاء الإجازات: ${formatSAR(leavePot)} • قيمة اليوم: ${formatSAR(leaveDayRate)}`;
       document.getElementById('grandEndTotalOut').textContent = formatSAR(grandEndTotal);
 
       renderAllowancesAccordion(basicSalary, rank);
@@ -1055,7 +1077,10 @@
               <div class="acc-right">
                 <span class="acc-name">${item.name}</span>
                 <span class="acc-tag ${item.includeInEos ? 'tag-included' : 'tag-excluded'}">
-                  ${item.includeInEos ? 'مشمول بالخدمة والإجازات' : 'مستبعد من الخدمة والإجازات'}
+                  ${item.includeInEos ? 'مكافأة الخدمة: نعم' : 'مكافأة الخدمة: لا'}
+                </span>
+                <span class="acc-tag ${item.includeInLeave ? 'tag-included' : 'tag-excluded'}">
+                  ${item.includeInLeave ? 'تعويض الإجازات: نعم' : 'تعويض الإجازات: لا'}
                 </span>
                 ${!item.active ? '<span class="acc-tag tag-excluded">معطّل</span>' : ''}
               </div>
@@ -1072,8 +1097,13 @@
                 </div>
 
                 <div class="toggle-line">
-                  <span>إدراج البند ضمن مكافأة نهاية الخدمة وتعويض الإجازات</span>
+                  <span>إدراج البند ضمن مكافأة نهاية الخدمة</span>
                   <input type="checkbox" ${item.includeInEos ? 'checked' : ''} onchange="updateAllowanceField('${item.id}', 'includeInEos', this.checked)" />
+                </div>
+
+                <div class="toggle-line">
+                  <span>إدراج البند ضمن تعويض الإجازات</span>
+                  <input type="checkbox" ${item.includeInLeave ? 'checked' : ''} onchange="updateAllowanceField('${item.id}', 'includeInLeave', this.checked)" />
                 </div>
 
                 ${isTerror ? `
@@ -1234,8 +1264,14 @@
         });
       });
 
-      document.getElementById('includePensionInPot').addEventListener('change', e => {
-        state.includePensionInPot = e.target.checked;
+      document.getElementById('includePensionInEos').addEventListener('change', e => {
+        state.includePensionInEos = e.target.checked;
+        saveState();
+        renderAll();
+      });
+
+      document.getElementById('includePensionInLeave').addEventListener('change', e => {
+        state.includePensionInLeave = e.target.checked;
         saveState();
         renderAll();
       });
@@ -1270,6 +1306,7 @@
           amount,
           active: true,
           includeInEos: true,
+          includeInLeave: true,
           type: 'normal'
         });
         nameEl.value = '';
