@@ -628,18 +628,6 @@
         <span class="section-pill" id="potsSummaryPill">الخدمة: 0 | الإجازات: 0</span>
       </div>
 
-      <div class="body-controls" style="margin-bottom: 12px;">
-        <div class="toggle-line">
-          <span>إضافة نسبة استقطاع التقاعد (9% من الراتب الأساسي) إلى مكافأة نهاية الخدمة</span>
-          <input type="checkbox" id="includePensionInEos" checked />
-        </div>
-
-        <div class="toggle-line">
-          <span>إضافة نسبة استقطاع التقاعد (9% من الراتب الأساسي) إلى تعويض الإجازات</span>
-          <input type="checkbox" id="includePensionInLeave" checked />
-        </div>
-      </div>
-
       <div class="form-grid cols-3" style="margin-bottom: 12px;">
         <div class="field">
           <label for="eosMonthsInput">مكافأة نهاية الخدمة (أشهر)</label>
@@ -709,7 +697,7 @@
       'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
     ];
 
-    const STORAGE_KEY = 'abu_samer_salary_platform_v5';
+    const STORAGE_KEY = 'abu_samer_salary_platform_v6';
 
     function defaultState() {
       return {
@@ -719,8 +707,6 @@
         birth: { day: 1, month: 1, year: 1400 },
         overtimeRate: 25,
         terrorRate: 25,
-        includePensionInEos: true,
-        includePensionInLeave: true,
         eosMonths: 6,
         custodyMonths: 2,
         leaveDays: 90,
@@ -733,7 +719,8 @@
           { id: 'civil_def', name: 'علاوة الدفاع المدني', amount: 0, active: false, includeInEos: true, includeInLeave: true, type: 'normal' },
           { id: 'moto', name: 'علاوة ركوب الدراجة النارية', amount: 0, active: false, includeInEos: true, includeInLeave: true, type: 'normal' },
           { id: 'food', name: 'بدل الإعاشة', amount: 500, active: true, includeInEos: true, includeInLeave: true, type: 'normal' },
-          { id: 'transport', name: 'بدل تنقلات', amount: 700, active: true, includeInEos: false, includeInLeave: false, type: 'transportAuto' }
+          { id: 'transport', name: 'بدل تنقلات', amount: 700, active: true, includeInEos: false, includeInLeave: false, type: 'transportAuto' },
+          { id: 'pension_add', name: 'استقطاع التقاعد (9% من الراتب الأساسي)', amount: 0, active: false, includeInEos: true, includeInLeave: true, type: 'pension9Allowance' }
         ],
         deductions: [
           { id: 'pension_ded', name: 'حسم التقاعد (9% من الراتب الأساسي)', amount: 0, active: true, type: 'pension9' }
@@ -858,8 +845,6 @@
       document.getElementById('birthMonth').value = state.birth.month;
       document.getElementById('birthYear').value = state.birth.year;
 
-      document.getElementById('includePensionInEos').checked = !!state.includePensionInEos;
-      document.getElementById('includePensionInLeave').checked = !!state.includePensionInLeave;
       document.getElementById('eosMonthsInput').value = state.eosMonths;
       document.getElementById('custodyMonthsInput').value = state.custodyMonths;
       document.getElementById('leaveDaysInput').value = state.leaveDays;
@@ -875,15 +860,22 @@
       return rank.grade1 + (grade - 1) * rank.increment;
     }
 
-    function computeAllowanceValue(item, basicSalary, rank) {
-      if (!item.active) return 0;
+    function getAllowanceRawAmount(item, basicSalary, rank) {
       if (item.type === 'terrorGrade1') {
         return +(rank.grade1 * ((Number(state.terrorRate) || 25) / 100)).toFixed(2);
       }
       if (item.type === 'overtime25') {
         return +(basicSalary * ((Number(state.overtimeRate) || 25) / 100)).toFixed(2);
       }
+      if (item.type === 'pension9Allowance') {
+        return +(basicSalary * 0.09).toFixed(2);
+      }
       return Number(item.amount) || 0;
+    }
+
+    function computeAllowanceValue(item, basicSalary, rank) {
+      if (!item.active) return 0;
+      return getAllowanceRawAmount(item, basicSalary, rank);
     }
 
     function computeDeductionValue(item, basicSalary) {
@@ -913,14 +905,14 @@
           a.amount = +(basicSalary * ((Number(state.overtimeRate) || 25) / 100)).toFixed(2);
           a.name = `مكافأة أعمال إضافية (${state.overtimeRate}%)`;
         }
+        if (a.type === 'pension9Allowance') {
+          a.amount = +(basicSalary * 0.09).toFixed(2);
+        }
       });
 
       let totalDeductions = 0;
-      let pension9Amount = 0;
       state.deductions.forEach(d => {
-        const val = computeDeductionValue(d, basicSalary);
-        if (d.type === 'pension9') pension9Amount = val;
-        totalDeductions += val;
+        totalDeductions += computeDeductionValue(d, basicSalary);
       });
 
       let totalAllowances = 0;
@@ -928,13 +920,15 @@
       let leaveIncludedAllowancesTotal = 0;
 
       state.allowances.forEach(a => {
-        const val = computeAllowanceValue(a, basicSalary, rank);
-        totalAllowances += val;
-        if (a.active && a.includeInEos) {
-          eosIncludedAllowancesTotal += val;
+        const rawVal = getAllowanceRawAmount(a, basicSalary, rank);
+        if (a.active) {
+          totalAllowances += rawVal;
         }
-        if (a.active && a.includeInLeave) {
-          leaveIncludedAllowancesTotal += val;
+        if (a.includeInEos && (a.active || a.type === 'pension9Allowance')) {
+          eosIncludedAllowancesTotal += rawVal;
+        }
+        if (a.includeInLeave && (a.active || a.type === 'pension9Allowance')) {
+          leaveIncludedAllowancesTotal += rawVal;
         }
       });
 
@@ -1012,12 +1006,8 @@
       const totalServiceMonthsAtRet = Math.max(serviceMonthsApprox, Math.floor(Math.max(0, retirementJD - hireJD) / 29.53));
       const pensionCalc = Math.min(basicSalary, (basicSalary * totalServiceMonthsAtRet) / 420);
 
-      // Separate pots for End of Service vs Leave Compensation
-      const eosPensionAdd = state.includePensionInEos ? pension9Amount : 0;
-      const eosPot = basicSalary + eosIncludedAllowancesTotal + eosPensionAdd;
-
-      const leavePensionAdd = state.includePensionInLeave ? pension9Amount : 0;
-      const leavePot = basicSalary + leaveIncludedAllowancesTotal + leavePensionAdd;
+      const eosPot = basicSalary + eosIncludedAllowancesTotal;
+      const leavePot = basicSalary + leaveIncludedAllowancesTotal;
 
       const eosMonths = Math.max(0, Number(state.eosMonths) || 0);
       const eosReward = eosPot * eosMonths;
@@ -1065,11 +1055,13 @@
         `${activeCount} مفعّل من ${state.allowances.length}`;
 
       listEl.innerHTML = state.allowances.map(item => {
-        const val = computeAllowanceValue(item, basicSalary, rank);
+        const displayVal = getAllowanceRawAmount(item, basicSalary, rank);
         const isOpen = openAccordions.has('allow_' + item.id);
         const isOvertime = item.type === 'overtime25';
         const isTerror = item.type === 'terrorGrade1';
-        const canDelete = !['danger', 'terror', 'overtime', 'extra_food', 'field', 'civil_def', 'moto', 'food', 'transport'].includes(item.id);
+        const isPension9Allowance = item.type === 'pension9Allowance';
+        const builtInIds = ['danger', 'terror', 'overtime', 'extra_food', 'field', 'civil_def', 'moto', 'food', 'transport', 'pension_add'];
+        const canDelete = !builtInIds.includes(item.id);
 
         return `
           <div class="accordion-item ${isOpen ? 'open' : ''}" id="acc_allow_${item.id}">
@@ -1082,10 +1074,10 @@
                 <span class="acc-tag ${item.includeInLeave ? 'tag-included' : 'tag-excluded'}">
                   ${item.includeInLeave ? 'تعويض الإجازات: نعم' : 'تعويض الإجازات: لا'}
                 </span>
-                ${!item.active ? '<span class="acc-tag tag-excluded">معطّل</span>' : ''}
+                ${!item.active ? '<span class="acc-tag tag-excluded">معطّل بالراتب</span>' : ''}
               </div>
               <div class="acc-left">
-                <span class="acc-amount">${formatSAR(val)}</span>
+                <span class="acc-amount">${formatSAR(item.active || isPension9Allowance ? displayVal : 0)}</span>
                 <span class="chevron">▼</span>
               </div>
             </button>
@@ -1111,12 +1103,14 @@
                     <label>نسبة علاوة مكافحة الإرهاب (% من راتب الدرجة الأولى لـ ${rank.name}: ${formatSAR(rank.grade1)})</label>
                     <input type="number" min="0" max="200" step="1" value="${state.terrorRate}" onchange="updateTerrorRate(this.value)" />
                   </div>
-                  <div class="greg-hint">محسوبة من راتب الدرجة الأولى لرتبة (${rank.name}): ${formatSAR(rank.grade1)} × ${state.terrorRate}% = ${formatSAR(val)}</div>
+                  <div class="greg-hint">محسوبة من راتب الدرجة الأولى لرتبة (${rank.name}): ${formatSAR(rank.grade1)} × ${state.terrorRate}% = ${formatSAR(displayVal)}</div>
                 ` : isOvertime ? `
                   <div class="field">
                     <label>نسبة العمل الإضافي (% من الراتب الأساسي)</label>
                     <input type="number" min="0" max="200" step="1" value="${state.overtimeRate}" onchange="updateOvertimeRate(this.value)" />
                   </div>
+                ` : isPension9Allowance ? `
+                  <div class="greg-hint">يُحتسب تلقائياً بنسبة 9% من الراتب الأساسي (${formatSAR(displayVal)}) ويُضاف لوعاء مكافأة الخدمة أو الإجازات بحسب اختيارك أعلاه.</div>
                 ` : `
                   <div class="field">
                     <label>القيمة الشهرية (ريال سعودي)</label>
@@ -1262,18 +1256,6 @@
           saveState();
           renderAll();
         });
-      });
-
-      document.getElementById('includePensionInEos').addEventListener('change', e => {
-        state.includePensionInEos = e.target.checked;
-        saveState();
-        renderAll();
-      });
-
-      document.getElementById('includePensionInLeave').addEventListener('change', e => {
-        state.includePensionInLeave = e.target.checked;
-        saveState();
-        renderAll();
       });
 
       document.getElementById('eosMonthsInput').addEventListener('input', e => {
