@@ -491,7 +491,7 @@
     <div class="header">
       <div class="header-title">
         <h1>منصة حساب الرواتب والعلاوة والتقاعد</h1>
-        <p>سلم رواتب الأفراد (من جندي إلى رئيس رقباء) • تقويم هجري مع التاريخ الميلادي</p>
+        <p>سلم رواتب الأفراد (من جندي إلى رئيس رقباء) • العلاوة السنوية 1/1 ميلادي</p>
       </div>
       <div class="badge-hijri" id="todayDisplay">جارٍ التحميل...</div>
     </div>
@@ -563,6 +563,18 @@
       </div>
 
       <div class="info-grid">
+        <div class="info-box">
+          <div class="info-box-title">العلاوة السنوية القادمة (1/1 ميلادي)</div>
+          <div class="info-box-val success" id="nextIncrementGregOut">—</div>
+          <div class="info-box-note" id="nextIncrementHijriOut">—</div>
+        </div>
+
+        <div class="info-box">
+          <div class="info-box-title">الراتب المتوقع بعد العلاوة السنوية</div>
+          <div class="info-box-val" id="nextBasicSalaryOut">—</div>
+          <div class="info-box-note" id="gradeCeilingNote">—</div>
+        </div>
+
         <div class="info-box">
           <div class="info-box-title">مدة الخدمة الحالية واستحقاق التقاعد</div>
           <div class="info-box-val" id="serviceDurationOut">—</div>
@@ -688,7 +700,7 @@
       'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
     ];
 
-    const STORAGE_KEY = 'abu_samer_salary_platform_v3';
+    const STORAGE_KEY = 'abu_samer_salary_platform_v4';
 
     function defaultState() {
       return {
@@ -873,6 +885,7 @@
 
     function renderAll() {
       const rank = getRankObj();
+      const grade = Math.min(15, Math.max(1, Number(state.grade) || 1));
       const basicSalary = getBasicSalary();
       const annualIncrement = rank.increment;
 
@@ -913,10 +926,36 @@
       const netSalary = grossSalary - totalDeductions;
 
       const now = new Date();
-      const todayJD = gregorianToJD(now.getFullYear(), now.getMonth() + 1, now.getDate());
+      const gYearNow = now.getFullYear();
+      const gMonthNow = now.getMonth() + 1;
+      const gDayNow = now.getDate();
+      const todayJD = gregorianToJD(gYearNow, gMonthNow, gDayNow);
       const todayHijri = jdToHijri(todayJD);
+
       document.getElementById('todayDisplay').textContent =
-        `${formatHijri(todayHijri)} | ${formatGreg({ year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() })}`;
+        `${formatHijri(todayHijri)} | ${formatGreg({ year: gYearNow, month: gMonthNow, day: gDayNow })}`;
+
+      // Next Annual Increment on 1/1 Gregorian
+      const nextIncGregYear = (gMonthNow === 1 && gDayNow === 1) ? gYearNow : gYearNow + 1;
+      const nextIncJD = gregorianToJD(nextIncGregYear, 1, 1);
+      const nextIncHijri = jdToHijri(nextIncJD);
+
+      document.getElementById('nextIncrementGregOut').textContent =
+        `1/1/${nextIncGregYear} م (${formatGreg({ year: nextIncGregYear, month: 1, day: 1 })})`;
+      document.getElementById('nextIncrementHijriOut').textContent =
+        `الموافق هجري: ${formatHijri(nextIncHijri)}`;
+
+      if (grade < 15) {
+        const nextSalary = basicSalary + annualIncrement;
+        const yearsToMaxGrade = 15 - grade;
+        document.getElementById('nextBasicSalaryOut').textContent = formatSAR(nextSalary);
+        document.getElementById('gradeCeilingNote').textContent =
+          `الدرجة القادمة (${grade + 1}) • متبقي ${yearsToMaxGrade} علاوة سنوية للدرجة 15`;
+      } else {
+        document.getElementById('nextBasicSalaryOut').textContent = formatSAR(basicSalary);
+        document.getElementById('gradeCeilingNote').textContent =
+          `بلغت أعلى درجة في السلم (الدرجة 15) للرتبة`;
+      }
 
       const hireJD = hijriToJD(state.hire.year, state.hire.month, state.hire.day);
       const birthJD = hijriToJD(state.birth.year, state.birth.month, state.birth.day);
@@ -973,11 +1012,11 @@
 
       const grandEndTotal = eosReward + leaveComp + custodyReward;
 
-      document.getElementById('rankBadge').textContent = `${rank.name} • الدرجة ${state.grade}`;
+      document.getElementById('rankBadge').textContent = `${rank.name} • الدرجة ${grade}`;
       document.getElementById('netSalaryOut').textContent = formatSAR(netSalary);
       document.getElementById('grossSalarySub').textContent = `الإجمالي: ${formatSAR(grossSalary)}`;
       document.getElementById('basicSalaryOut').textContent = formatSAR(basicSalary);
-      document.getElementById('annualIncSub').textContent = `العلاوة السنوية: ${formatSAR(annualIncrement)}`;
+      document.getElementById('annualIncSub').textContent = `العلاوة السنوية: ${formatSAR(annualIncrement)} (1/1 م)`;
       document.getElementById('totalAllowancesOut').textContent = formatSAR(totalAllowances);
       document.getElementById('deductionsSub').textContent = `الحسميات: ${formatSAR(totalDeductions)}`;
       document.getElementById('pensionOut').textContent = formatSAR(pensionCalc);
