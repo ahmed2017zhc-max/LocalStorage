@@ -238,6 +238,12 @@
       font-weight: 600;
     }
 
+    .date-iso {
+      unicode-bidi: isolate;
+      direction: ltr;
+      display: inline-block;
+    }
+
     .accordion-list {
       display: flex;
       flex-direction: column;
@@ -704,7 +710,7 @@
       'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
     ];
 
-    const STORAGE_KEY = 'abu_samer_salary_platform_v9';
+    const STORAGE_KEY = 'abu_samer_salary_platform_v10';
 
     function defaultState() {
       return {
@@ -809,7 +815,9 @@
     }
 
     function formatGreg(g) {
-      return `${g.year}-${String(g.month).padStart(2, '0')}-${String(g.day).padStart(2, '0')} م`;
+      const d = String(g.day).padStart(2, '0');
+      const m = String(g.month).padStart(2, '0');
+      return `<span class="date-iso">${d}/${m}/${g.year}</span> م`;
     }
 
     function formatHijri(h) {
@@ -941,14 +949,14 @@
       const todayJD = gregorianToJD(gYearNow, gMonthNow, gDayNow);
       const todayHijri = jdToHijri(todayJD);
 
-      document.getElementById('todayDisplay').textContent =
+      document.getElementById('todayDisplay').innerHTML =
         `${formatHijri(todayHijri)} | ${formatGreg({ year: gYearNow, month: gMonthNow, day: gDayNow })}`;
 
       const nextIncGregYear = (gMonthNow === 1 && gDayNow === 1) ? gYearNow : gYearNow + 1;
       const nextIncJD = gregorianToJD(nextIncGregYear, 1, 1);
       const nextIncHijri = jdToHijri(nextIncJD);
 
-      document.getElementById('nextIncrementGregOut').textContent = `1/1/${nextIncGregYear} م`;
+      document.getElementById('nextIncrementGregOut').innerHTML = formatGreg({ year: nextIncGregYear, month: 1, day: 1 });
       document.getElementById('nextIncrementHijriOut').textContent = `الموافق هجري: ${formatHijri(nextIncHijri)}`;
 
       if (grade < 15) {
@@ -966,8 +974,8 @@
       const hireJD = hijriToJD(state.hire.year, state.hire.month, state.hire.day);
       const birthJD = hijriToJD(state.birth.year, state.birth.month, state.birth.day);
 
-      document.getElementById('hireGregOut').textContent = `الموافق ميلادي: ${formatGreg(jdToGregorian(hireJD))}`;
-      document.getElementById('birthGregOut').textContent = `الموافق ميلادي: ${formatGreg(jdToGregorian(birthJD))}`;
+      document.getElementById('hireGregOut').innerHTML = `الموافق ميلادي: ${formatGreg(jdToGregorian(hireJD))}`;
+      document.getElementById('birthGregOut').innerHTML = `الموافق ميلادي: ${formatGreg(jdToGregorian(birthJD))}`;
 
       const serviceDays = Math.max(0, todayJD - hireJD);
       const serviceMonthsApprox = Math.floor(serviceDays / 29.53);
@@ -986,7 +994,7 @@
       const retirementGreg = jdToGregorian(retirementJD);
 
       document.getElementById('retirementHijriOut').textContent = formatHijri(retirementHijri);
-      document.getElementById('retirementGregOut').textContent = `الموافق ميلادي: ${formatGreg(retirementGreg)}`;
+      document.getElementById('retirementGregOut').innerHTML = `الموافق ميلادي: ${formatGreg(retirementGreg)}`;
 
       const daysToRetirement = retirementJD - todayJD;
       if (daysToRetirement <= 0) {
