@@ -704,7 +704,7 @@
       'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
     ];
 
-    const STORAGE_KEY = 'abu_samer_salary_platform_v8';
+    const STORAGE_KEY = 'abu_samer_salary_platform_v9';
 
     function defaultState() {
       return {
@@ -948,10 +948,8 @@
       const nextIncJD = gregorianToJD(nextIncGregYear, 1, 1);
       const nextIncHijri = jdToHijri(nextIncJD);
 
-      document.getElementById('nextIncrementGregOut').textContent =
-        `1/1/${nextIncGregYear} م (${formatGreg({ year: nextIncGregYear, month: 1, day: 1 })})`;
-      document.getElementById('nextIncrementHijriOut').textContent =
-        `الموافق هجري: ${formatHijri(nextIncHijri)}`;
+      document.getElementById('nextIncrementGregOut').textContent = `1/1/${nextIncGregYear} م`;
+      document.getElementById('nextIncrementHijriOut').textContent = `الموافق هجري: ${formatHijri(nextIncHijri)}`;
 
       if (grade < 15) {
         const nextSalary = basicSalary + annualIncrement;
